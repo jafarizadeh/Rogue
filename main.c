@@ -10,8 +10,9 @@ typedef struct Player
 
 int screenSetUp();
 int mapSetUp();
-void handleInput(int input, Player *user);
-void playerMove(int y, int x, Player *user);
+int handleInput(int input, Player *user);
+int playerMove(int y, int x, Player *user);
+int checkPosition(int newY, int newX, Player *user);
 Player *playerSetUp();
 
 int main()
@@ -86,41 +87,69 @@ Player *playerSetUp()
 	return newPlayer;
 }
 
-void handleInput(int input, Player *user)
+int handleInput(int input, Player *user)
 {
+	int newY;
+	int newX;
+
 	switch (input)
 	{
 	// move up
 	case 'w':
 	case 'W':
-		playerMove(user->yPosition - 1, user->xPosition, user);
+		newY = user->yPosition - 1;
+		newX = user->xPosition;
 		break;
 
 	// move down
 	case 's':
 	case 'S':
-		playerMove(user->yPosition + 1, user->xPosition, user);
+		newY = user->yPosition + 1;
+		newX = user->xPosition;
 		break;
 
 	// move left
 	case 'a':
 	case 'A':
-		playerMove(user->yPosition, user->xPosition - 1, user);
+		newY = user->yPosition;
+		newX = user->xPosition - 1;
 		break;
 
 	// move right
 	case 'd':
 	case 'D':
-		playerMove(user->yPosition, user->xPosition + 1, user);
+		newY = user->yPosition;
+		newX = user->xPosition + 1;
 		break;
 
 	default:
 		break;
 	}
+
+	checkPosition(newY, newX, user);
+
+	return 0;
 }
 
-void playerMove(int y, int x, Player *user)
+// check where is at next position
+int checkPosition(int newY, int newX, Player *user)
 {
+	int space;
+	switch (mvinch(newY, newX))
+	{
+	case '.':
+		playerMove(newY, newX, user);
+		break;
+	default:
+		move(user->yPosition, user->xPosition);
+		break;
+	}
+
+	return 0;
+}
+
+int playerMove(int y, int x, Player *user)
+ß
 	mvprintw(user->yPosition, user->xPosition, ".");
 
 	user->yPosition = y;
@@ -128,4 +157,6 @@ void playerMove(int y, int x, Player *user)
 
 	mvprintw(user->yPosition, user->xPosition, "@");
 	move(user->yPosition, user->xPosition);
+
+	return 0;
 }
