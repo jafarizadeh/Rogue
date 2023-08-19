@@ -10,6 +10,8 @@ typedef struct Player
 
 int screenSetUp();
 int mapSetUp();
+int handleInput (int input, Player * user);
+int playerMove(int y, int x, Player * user);
 Player * playerSetUp();
 
 int main () 
@@ -23,9 +25,10 @@ int main ()
 	
 	user = playerSetUp();
 	
+	// main game loop
 	while ((ch = getch()) != 'q')
 	{
-		
+		handleInput(ch, user);
 	}
 	
 	endwin();
@@ -41,7 +44,7 @@ int screenSetUp()
 	noecho();
 	refresh();
 	
-	return 0;
+	return 1;
 	
 }
 
@@ -81,13 +84,56 @@ Player * playerSetUp()
 	newPlayer -> yPosition = 14;
 	newPlayer -> health = 20;
 	
-	mvprintw(newPlayer -> yPosition, newPlayer -> xPosition, "@");
-	move(newPlayer -> yPosition, newPlayer -> xPosition);
-	
 	return newPlayer;
 }
 
+int handleInput (int input, Player * user)
+{
+	switch (input)
+	{
+		// move up
+		case 'w' : 
+		case 'W' :
+			playerMove(user -> yPosition - 1, user -> xPosition, user);
+			break;
+			
+		// move down
+		case 's' : 
+		case 'S' :
+			playerMove(user -> yPosition + 1, user -> xPosition, user);
+			break;
+			
+		// move left
+		case 'a' : 
+		case 'A' :
+			playerMove(user -> yPosition, user -> xPosition, user - 1);
+			break;
+		
+		// move right	
+		case 'd' : 
+		case 'D' :
+			playerMove(user -> yPosition, user -> xPosition, user + 1);
+			break;
+			
+		default:
+			break;
+	}
+}
 
+int playerMove (int y, int x, Player * user)
+{
+	mvprintw(user -> yPosition, user -> xPosition, ".");
+	
+	user -> yPosition = y;
+	user -> xPosition = x;
+	
+	mvprintw(user -> yPosition, user -> xPosition, "@");
+	move(user -> yPosition, user -> xPosition);
+}
+
+
+
+ 
 
 
 
